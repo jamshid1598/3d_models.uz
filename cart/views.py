@@ -112,17 +112,29 @@ class CartDetailView(View):
 		)
 
 
+
+from django.core.serializers.json import DjangoJSONEncoder
+from decimal import Decimal
+class LazyEncoder(DjangoJSONEncoder):
+	def default(self, obj):
+		if isinstance(obj, Decimal):
+			return str(obj)
+		return super().default(obj)
+
 def model_checkbox(request, *args, **kwargs):
-	data = json.loads(request.body)
-	pk = data['pk']
-	action = data['action']
-	print("PrimaryKey: ", pk)
+	pk = request.GET.get('pk')
+	action = request.GET.get('action')
+	print("PrimaryKey: ", type(pk))
 	if request.user.is_authenticated:
 		customer = request.user.customer
 		order, created = Order.objects.get_or_create(customer=customer, complete=False)
 		print("Order: ", order, '\n', "Created: ", created)
 		items = order.orderitem_set.all()
-	
+
+		print(items)
+		print(pk)
+		print(action)
+
 		if not created and len(items) > 0:
 			if pk == 'all' and action=='checked':
 				for item in items:
@@ -144,6 +156,9 @@ def model_checkbox(request, *args, **kwargs):
 						item.cart_field = True
 						print("PK: ", pk, "Value: ", item.cart_field)
 						item.save()
-					
-	done_action = {"added":False, "one_more":False, "already_added":False}
-	return JsonResponse(done_action, safe=False, status=200)
+	try:
+		items_json = serializers.serialize('json', items, cls=LazyEncoder, ensure_ascii=True)
+		return JsonResponse({"instance": items_json,}, status=200)
+	except Exception as e:
+		print("Error occured: ", e)
+	return JsonResponse({"instance": "failed",}, status=200)

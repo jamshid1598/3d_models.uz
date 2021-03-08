@@ -102,59 +102,45 @@ function model_checkbox($this){
 	console.log(action);
 
 	console.log(pk)
-	model_checkbox_helper(pk, action)
-	// $.ajax({
-	// 	type: 'GET',
-	// 	url: "/ajax/model/checkbox/",
-	// 	data : { 
-	// 		request_data: pk,
-	// 	},
-	// 	success: function(response) {
-	// 		var instance = JSON.parse(response["instance"]);
-	// 		console.log("Sellected: ", instance.length)
-
-	// 		if (instance.length > 0){
-	// 			for (var i = 0; i < instance.length; i++){
-    //            console.log("pk: ",           instance[i]['pk'])
-	// 				console.log("model_file: ",   instance[i]['fields']['model_file'])
-    //            console.log("image: ",        instance[i]['fields']['image'])
-    //            console.log("video_file: ",   instance[i]['fields']['video_file'])
-    //            console.log("video_link: ",   instance[i]['fields']['video_link'])
-    //            console.log("caption: ",      instance[i]['fields']['caption'])
-    //            console.log("name: ",         instance[i]['fields']['name'])
-    //            console.log("slug: ",         instance[i]['fields']['slug'])
-    //            console.log("paid: ",         instance[i]['fields']['paid'])
-    //            console.log("price: ",        instance[i]['fields']['price'])
-    //            console.log("published_at: ", instance[i]['fields']['published_at'])
-    //            console.log("updated_at: ",   instance[i]['fields']['updated_at'])
-	// 			}
-	// 		}
-		
-	// 	},
-	// 	error: function() { 
-	// 		console.log('Houston, we have a problem!');
-	// 	}
-	// });
+	total_price(pk, action)
+	
 }
 
-function model_checkbox_helper(pk, action){
-	console.log('User is authenticated, sending data...')
+// change total price in the cart page when checkbox sellected
+function total_price(pk, action){
+	$.ajax({
+		type: 'GET',
+		url: '/ajax/model/checkbox/',
+		data : { 
+			'pk':pk, 'action':action
+		},
+		success: function(response) {
+			var instance = JSON.parse(response["instance"]);
+			console.log("Sellected: ", instance.length);
+			console.log("Sellected: ", instance);
+			var total_price = parseFloat(0, 10);
+			var mpk;
+			var single_price;
 
-	var url = '/ajax/model/checkbox/'
+			if (instance.length > 0){
+				for (var i = 0; i < instance.length; i++){
+					console.log("pk: ",           instance[i]['pk']);
+					console.log("cart_field: ",   instance[i]['fields']['cart_field']);
+					mpk = instance[i]['pk']
+					single_price = document.getElementById('single_price'+mpk).value;
 
-	fetch(url, {
-		method:'POST',
-		headers:{
-			'Content-Type':'application/json',
-			'Accept': 'application/json',
-			'X-CSRFToken':csrftoken,
-		}, 
-		body:JSON.stringify({'pk':pk, 'action':action})
-	})
-	.then((response) => {
-	   return response.json();
-	})
-	.then((data) => {
-		// var notif_tag = document.getElementById('AlreadyAdded'+pk.toString());
+					if (instance[i]['fields']['cart_field']){
+						console.log("Single price", single_price)
+						total_price += parseFloat(single_price, 10);
+					}
+				}
+				console.log("Total price", total_price)
+				model_total_price = document.getElementById("model_total_price")
+				model_total_price.innerHTML = total_price
+			}
+		},
+		error: function() { 
+			console.log('Houston, we have a problem!');
+		}
 	});
 }

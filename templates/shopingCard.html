@@ -44,7 +44,7 @@ integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQV
 		<div class="shopingcard__item">
 			<div class="shopingcard__item--title">To’lov Summasi :</div>
 			<!-- <div class="shopingcard__item--summ"><span class="shopping__price-new">{{ s }}</span>{% if s != 0 %}.00 {% endif %} so'm </div> -->
-			<div class="shopingcard__item--summ"><span class="shopping__price-new">{{ total_price }}</span> so'm </div>
+			<div class="shopingcard__item--summ"><span class="shopping__price-new" id="model_total_price">{{ total_price }}</span> so'm </div>
 			<a href="{% url 'Core:payment-view' %}" class="shopingcard__item--btn">Sotib Olish</a>
 		</div>
 		
@@ -62,7 +62,8 @@ integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQV
 			{% endif %}
 			<div class="shopproduct__card">
 				<div class="pretty p-default p-round all">
-					<input type="checkbox" class="card_items" onclick="model_checkbox(this)" data-pk="{{ item.pk }}" id='model_checkbox{{ item.pk }}'/>
+					<input type="checkbox" class="card_items" onclick="model_checkbox(this)" data-pk="{{ item.pk }}"/>
+					<input type="hidden" id='single_price{{ item.pk }}' value="{% if item.model.discount %}{{ item.model.discount }}{% else %}{{ item.model.price }}{% endif %}">
 					<div class="state p-success-o">
 						<label>
 						</label>
@@ -104,18 +105,23 @@ integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQV
 
 {% endblock bodycontent %}    
 
-{% block js %} 
+	{% block js %} 
 
-<!--jQuery-->
-<script src="{% static 'jQuery/jquery.min.js' %}"></script>
-<script src="{% static 'jQuery/lips/owlcarousel2/owl.carousel.min.js' %}"></script>
-<script src="{% static 'jQuery/jQuery.js' %}"></script>
+		<!--jQuery-->
+		<script src="{% static 'jQuery/jquery.min.js' %}"></script>
+		<script src="{% static 'jQuery/lips/owlcarousel2/owl.carousel.min.js' %}"></script>
+		<script src="{% static 'jQuery/jQuery.js' %}"></script>
 
-<script src="{% static 'js/swiper.min.js' %}"></script>
-<!--/jQuery-->
-<!--javascript-->
-<script src="{% static 'js/main.js' %}"></script>
+		<script src="{% static 'js/swiper.min.js' %}"></script>
+		<!--/jQuery-->
+		<!--javascript-->
+		<script src="{% static 'js/main.js' %}"></script>
 
+		<script type="text/javascript">
+			window.onload = function() {
+				selected_models_info();
+			  };
+		</script>
 																		
     {% endblock js %}
 

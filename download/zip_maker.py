@@ -1,4 +1,3 @@
-
 import os
 import zipfile
 try:
@@ -8,29 +7,6 @@ except ImportError:
 
 from django.http import HttpResponse
 from django.conf import settings
-
-# def zip_maker(filenames):
-#     zip_subdir = str(settings.MEDIA_ROOT)
-#     zip_filename = "%s.zip" % zip_subdir
-
-#     s = StringIO()
-
-#     zf = zipfile.ZipFile(s, "w")
-
-#     for fpath in filenames:
-#         fdir, fname = os.path.split(fpath)
-#         zip_path = os.path.join(zip_subdir, fname)
-
-#         zf.write(fpath, zip_path)
-
-#     zf.close()
-
-#     resp = HttpResponse(s.getvalue(), mimetype = "application/x-zip-compressed")
-#     resp['Content-Disposition'] = 'attachment; filename=%s' % zip_filename
-
-#     return resp
-
-
 
 
 from io import BytesIO

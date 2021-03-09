@@ -17,7 +17,6 @@ class Customer(models.Model):
     user = models.OneToOneField(User, null=True, blank=True,  on_delete=models.CASCADE)
     # name = models.CharField(max_length=200, null=True, verbose_name="имя: ")
     # phone = models.CharField(max_length=200, null=True, verbose_name="Телефонный номер: ")
-    # address = models.CharField(max_length=500, null=True, verbose_name = "Адрес: ")
    
     class Meta:
         verbose_name = "Customer"
@@ -74,10 +73,7 @@ class OrderedItem(models.Model):
     def __str__(self):
         return str(self.customer) + " | " + str(self.completed)
     
-    # @property
-    # def get_total(self):
-    #     total = self.single_price * self.product_amount
-    #     return total
+   
 
     @property
     def imageURL(self):
@@ -114,27 +110,14 @@ class Order(models.Model):
 
     def __str__(self):
         return str(self.id)
-        
- 
 
-    # @property
-    # def get_cart_total(self):
-    #     orderitems = self.orderitem_set.all()
-    #     total = sum([item.get_total for item in orderitems])
-    #     return total 
-
-    # @property
-    # def get_cart_items(self):
-    #     orderitems = self.orderitem_set.all()
-    #     total = sum([item.quantity for item in orderitems])
-    #     return total 
 
 class OrderItem(models.Model):
     model = models.ForeignKey(Product, on_delete=models.SET_NULL, related_name="ordered_product", null=True, verbose_name="Model")
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, verbose_name="Order")
     quantity = models.IntegerField(default=0, null=True, blank=True, verbose_name="Quantity")
     date_added = models.DateTimeField(auto_now_add=True, verbose_name="Order Date")
-    cart_field = models.BooleanField(default=False) # This field is only changed through cart page
+    cart_field = models.BooleanField(default=False) # This field is only changed through checkbox in cart page
 
     class Meta:
         verbose_name="Order Model"
@@ -149,17 +132,3 @@ class OrderItem(models.Model):
             price = self.model.price
         total = price * self.quantity
         return total
-
-# class ShippingAddress(models.Model):
-#     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True)
-#     order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
-#     address = models.CharField(max_length=200, null=False)
-#     city = models.CharField(max_length=200, null=False)
-#     # state = models.CharField(max_length=200, null=False)
-#     # zipcode = models.CharField(max_length=200, null=False)
-#     date_added = models.DateTimeField(auto_now_add=True)
-
-#     def __str__(self):
-#         return self.address
-
-

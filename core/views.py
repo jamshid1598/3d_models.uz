@@ -10,6 +10,7 @@ from django.template import defaultfilters
 from django.conf import settings
 from django.core.mail import send_mail
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.conf import settings
 from datetime import datetime
 from django.db.models import Case, Value, When, Q, F
@@ -85,14 +86,27 @@ class ModelDetailView(DetailView):
 
 
 
-class PaymentView(View):
+class PaymentView(LoginRequiredMixin, View):
 	template_name = "To'lov.forma.html"
 	# context       = {}
-	amount = 0
+	total_price = 0
 	def get(self, request, *args, **kwargs):
-		global amount
-		amount = request.GET.get('amount')
-		print(amount)
+		if request.user.is_authenticated:
+			customer = self.request.user.customer
+			order, created = Order.objects.get_or_create(customer=customer, complete=False)
+			print("Order: ", order, '\n', "Created: ", created)
+			items = order.orderitem_set.all()
+		else:
+			items = []
+		
+		if len(items) > 0:
+			for item in items:
+				if item.cart_field and item.model.discount:
+					self.total_price += item.model.discount
+				elif item.cart_field:
+					self.total_price += item.model.price
+
+		print(self.total_price)
 		payform = PayForm()
 		return render(
 			request,
@@ -106,7 +120,7 @@ class PaymentView(View):
 			number = payform.cleaned_data['number']
 			exp_date = payform.cleaned_data['exp_date']
 			
-			r = create_verify(number, exp_date, amount)
+			r = create_verify(number, exp_date, self.total_price)
 			if 'error' not in r:
 					# return redirect('card_verify_code')
 				return render(request, "card_verify.html", {

@@ -90,7 +90,6 @@ class CartDetailView(View):
 			items_json      = json_serializer.serialize(items, ensure_ascii=False)
 		else:
 			items = []
-			order = {"get_cart_total": 0, "get_cart_items":0}
 			items_json = dict({})
 		if len(items) > 0:
 			for item in items:

@@ -118,9 +118,11 @@ function total_price(pk, action){
 			var instance = JSON.parse(response["instance"]);
 			console.log("Sellected: ", instance.length);
 			console.log("Sellected: ", instance);
-			var total_price = parseFloat(0, 10);
+			var total_price = 0.0;
 			var mpk;
 			var single_price;
+			var m_checkbox;
+			var all_checkbox = 0;
 
 			if (instance.length > 0){
 				for (var i = 0; i < instance.length; i++){
@@ -128,16 +130,67 @@ function total_price(pk, action){
 					console.log("cart_field: ",   instance[i]['fields']['cart_field']);
 					mpk = instance[i]['pk']
 					single_price = document.getElementById('single_price'+mpk).value;
-
+					m_checkbox   = document.getElementById('single_price'+mpk) 
 					if (instance[i]['fields']['cart_field']){
 						console.log("Single price", single_price)
-						total_price += parseFloat(single_price, 10);
+						total_price += parseFloat(single_price);
+						all_checkbox ++;
+						m_checkbox.checked = true;
+					}else{
+						m_checkbox.checked = false;
 					}
 				}
 				console.log("Total price", total_price)
 				model_total_price = document.getElementById("model_total_price")
-				model_total_price.innerHTML = total_price
+				model_total_price.innerHTML = (total_price)
+				if (all_checkbox ==  instance.length){
+					document.getElementById("all_checkbox").checked = true;
+				}else{
+					document.getElementById("all_checkbox").checked = false;
+				}
 			}
+		},
+		error: function() { 
+			console.log('Houston, we have a problem!');
+		}
+	});
+}
+
+// change checkbox in the cart page when page uploaded
+function selected_models_info(){
+	var pk = ''
+	var action = ''
+
+	$.ajax({
+		type: 'GET',
+		url: '/ajax/model/checkbox/',
+		data : { 
+			'pk':pk, 'action':action
+		},
+		success: function(response) {
+			var instance = JSON.parse(response["instance"]);
+			console.log("Sellected: ", instance.length);
+			console.log("Sellected: ", instance);
+			var all_checkbox = 0;
+			if (instance.length > 0){
+				for (var i = 0; i < instance.length; i++){
+					mpk = instance[i]['pk'];
+					var m_checkbox = document.getElementById('single_price'+mpk);
+
+					if (instance[i]['fields']['cart_field']){
+						m_checkbox.checked=true;
+						all_checkbox ++;
+					}else{
+						m_checkbox.checked=false;
+					}
+				}
+				if (all_checkbox ==  instance.length){
+					document.getElementById("all_checkbox").checked = true;
+				}else{
+					document.getElementById("all_checkbox").checked = false;
+				}
+			}
+			console.log("al", all_checkbox)
 		},
 		error: function() { 
 			console.log('Houston, we have a problem!');

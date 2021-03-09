@@ -57,46 +57,42 @@ integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQV
 		<div class="shopproduct__cards">
 			
 			{% for item in items %}
-			{% if item.cart_field %}
-			this is {{item.cart_field}}
-			{% endif %}
-			<div class="shopproduct__card">
-				<div class="pretty p-default p-round all">
-					<input type="checkbox" class="card_items" onclick="model_checkbox(this)" data-pk="{{ item.pk }}"/>
-					<input type="hidden" id='single_price{{ item.pk }}' value="{% if item.model.discount %}{{ item.model.discount }}{% else %}{{ item.model.price }}{% endif %}">
-					<div class="state p-success-o">
-						<label>
-						</label>
+				<div class="shopproduct__card">
+					<div class="pretty p-default p-round all">
+						<input type="checkbox" id='single_price{{ item.pk }}'  value="{% if item.model.discount %}{{ item.model.discount }}{% else %}{{ item.model.price }}{% endif %}" class="card_items" onclick="model_checkbox(this)" data-pk="{{ item.pk }}"/>
+						<!-- <input type="hidden" > -->
+						<div class="state p-success-o">
+							<label>
+							</label>
+						</div>
 					</div>
-				</div>
-				<div class="shopproduct__card--image">
-					<img src="{{ item.model.imageURL }}" alt="product img" class="shopproduct__card--img" width="300" height="150">
-				</div>
-				
-				<div class="shopproduct__info" >
-					<div class="shopproduct__info--title">{{ item.model.name }}<b data="120">{{ item.model.price }}</b><span> so'm</span></div>
-					<div class="shopproduct__info--text">
-						<p>
-							{{ item.model.short_info }}
-						</p>
+					<div class="shopproduct__card--image">
+						<img src="{{ item.model.imageURL }}" alt="product img" class="shopproduct__card--img" width="300" height="150">
 					</div>
-				</div>
-				
-				
-				<div class="shopproduct__info">
-					<div class="shopproduct__info--text">
-						<a href="#" onclick="add_to_cart_view(this)" data-pk="{{  item.model.pk }}" data-action="clear" data-pageid="cart-page">
-							<span>
-								<i class="fa fa-close pr-1 text-danger"></i>
-							</span>
+					<div class="shopproduct__info" >
+						<div class="shopproduct__info--title">{{ item.model.name }}
+							<b data="120">{{ item.model.price }}</b>
+							<span> so'm</span>
+						</div>
+						<div class="shopproduct__info--text">
 							<p>
-								O'chirish
+								{{ item.model.short_info }}
 							</p>
-						</a>
+						</div>
+					</div>
+					<div class="shopproduct__info">
+						<div class="shopproduct__info--text">
+							<a href="#" onclick="add_to_cart_view(this)" data-pk="{{  item.model.pk }}" data-action="clear" data-pageid="cart-page">
+								<span>
+									<i class="fa fa-close pr-1 text-danger"></i>
+								</span>
+								<p>
+									O'chirish
+								</p>
+							</a>
+						</div>
 					</div>
 				</div>
-			</div>
-			
 			{% endfor %}
 			
 		</div>

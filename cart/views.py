@@ -146,7 +146,7 @@ def model_checkbox(request, *args, **kwargs):
 					item.cart_field = False
 					print("PK: ", pk, "Value: ", item.cart_field)
 					item.save()
-			else:
+			elif pk != '' and action != '':
 				for item in items:
 					if item.pk == int(pk) and item.cart_field == True:
 						item.cart_field = False

@@ -85,8 +85,6 @@ def make_models_zip(request, *args, **kwargs):
 	for model in  items:
 		if model.cart_field:
 			model_locations.append(model.model.model_file.path)
-	print(model_locations)
-	print(settings.MEDIA_ROOT)
-	print("Zip File", zip_maker(model_locations))
+	# print("Zip File", zip_maker(model_locations))
 	return  zip_maker(model_locations)
 

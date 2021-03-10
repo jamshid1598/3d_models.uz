@@ -19,9 +19,6 @@
 	{% block bodycontent %}
 
 		<section class="content">
-			<!--        <div class="content__img">-->
-			<!--            <img src="./img/content-img.jpg" alt="content-img">-->
-			<!--        </div>-->
 			
 			<!-- Navbar -->
 			{% include 'includes/navbar.html' %}
@@ -31,37 +28,6 @@
 
 		<section class="about ">
 			<h1 class="about__title">Biz haqimizda</h1>
-
-			<!-- <div class=" about__line ">
-				<div class=" about__img1 ">
-					<img src="{% static 'img/about1.svg' %}" alt="">
-				</div>
-				<div class="about__me">
-					<h3 class="about__titles">Biz haqimizda</h3>
-					<div class="about__desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Non integer congue odio
-						duis. Nec gravida id
-						convallis pellentesque vel nisl porttitor eget. Vitae convallis lacus, in tortor ut sapien. Nisl
-						adipiscing molestie ullamcorper lacinia ornare viverra vitae sed ipsum.Nisi, volutpat sodales cursus
-						sit quis et sit. Dolor eget pulvinar tortor aliquam. Sed mi scelerisque dui cursus 
-					</div>
-				</div>
-			</div>
-
-			<div class=" about__line  about__line__right">
-				<div class="about__me">
-					<h3 class="about__titles">Biz haqimizda</h3>
-					<div class="about__desc">
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit. Non integer congue odio
-						duis. Nec gravida id
-						convallis pellentesque vel nisl porttitor eget. Vitae convallis lacus, in tortor ut sapien. Nisl
-						adipiscing molestie ullamcorper lacinia ornare viverra vitae sed ipsum.Nisi, volutpat sodales cursus
-						sit quis et sit. Dolor eget pulvinar tortor aliquam. Sed mi scelerisque dui cursus 
-					</div>
-				</div>
-				<div class=" about__img2">
-					<img src="{% static 'img/about2.svg' %}" alt="">
-				</div>
-			</div> -->
 
 			{% for object in object_list %}
 				<div class=" about__line  {% cycle ' ' 'about__line__right' %}">
@@ -77,7 +43,6 @@
 				<h3 style="margin-bottom: 15%; color: gray">There is no Info ;)</h3>
 			{% endfor %}
 
-			
 		</section>
 		<style>	
 			.about__line__right h3 {

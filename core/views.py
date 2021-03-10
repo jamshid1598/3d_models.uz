@@ -107,7 +107,9 @@ class PaymentView(LoginRequiredMixin, View):
 					self.total_price += item.model.price
 
 		print(self.total_price)
-		payform = PayForm()
+
+		payform = PayForm() # Payment Form
+		
 		return render(
 			request,
 			self.template_name,
@@ -115,18 +117,14 @@ class PaymentView(LoginRequiredMixin, View):
 		)
 	def post(self, request):
 		payform = PayForm(request.POST)
-
 		if payform.is_valid():
 			number = payform.cleaned_data['number']
 			exp_date = payform.cleaned_data['exp_date']
-			
-			r = create_verify(number, exp_date, self.total_price)
+			r = create_verify(number, exp_date)
 			if 'error' not in r:
-					# return redirect('card_verify_code')
 				return render(request, "card_verify.html", {
-					'token': r['token']
+					'token': r['token'],
 				})
-			# else:
 		print("Error")
 		return redirect('Core:payment-view')
 
@@ -175,6 +173,25 @@ def downloads(request, *args, **kwargs):
 		except Exception as e:
 			print("Error occured: ", e)
 	return Http404
+
+# other changes
+def save_model(request):
+	quantity = request.GET.get('model_quantity')
+	single_price = request.GET.get('single_price')
+	total_price = request.GET.get('total_price')
+	print(quantity, single_price, request.user.id)
+	customer = Customer.objects.get(user=request.user.id)
+	ordereditem = OrderedItem.objects.create(
+		model_quantity=quantity, 
+		single_price = single_price,
+		total_price = total_price,
+		completed = False,
+		customer_id = customer.id
+	)
+	print(ordereditem)
+	ordereditem.save()
+	return redirect('/')
+# end other changes
 
 class PortfolioListView(ListView):
 	model = PortFolio

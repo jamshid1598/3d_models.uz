@@ -3,6 +3,8 @@ console.log("hello world")
 
 function add_to_cart_view($this){
 	var pk = $this.dataset.pk
+	var pageid = $this.dataset.pageid
+	var action = $this.dataset.action
 
 	console.log('productPk: ', pk, 'Action:', action)
 	console.log('USER: ', user)
@@ -44,20 +46,14 @@ function updateUserOrder(pk, action, pageid){
 		}
 		// location.reload()
 		console.log("action: ", data["done_action"])
-		// {"added":False, "removed":False, "cleared":False, "new_added":False}
 		if (notif_tag != null){
 			if (data["added"] == true && pageid == "product-page"){
-				// alert("New product added to your cart.")
 				notif_tag.innerHTML = 'Added To Cart';
 				notif_tag.classList.toggle("show");
-				// $('#AlreadyAdded'+productPk.toString()).hide(5000);
-				// added_to_cart()
 			}
 			if (data["already_added"] == true && pageid == "product-page"){
-				// alert("This product was already added to your cart.")
 				notif_tag.innerHTML = 'Already Added';
 				notif_tag.classList.toggle("show");
-				// $('#AlreadyAdded'+productPk.toString()).hide(5000);
 			}
 		}
 	});
@@ -68,7 +64,6 @@ function LoginSignUpFunction(pk) {
 	console.log("This method works fine")
 	var popup = document.getElementById("PopupNotification"+pk.toString());
 	popup.classList.toggle("show");
-	// $('#PopupNotification'+productPk.toString()).hide(5000);
   }
 
 
@@ -125,6 +120,7 @@ function total_price(pk, action){
 			var all_checkbox = 0;
 
 			if (instance.length > 0){
+				document.getElementById("all_checkbox").type = "checkbox";
 				for (var i = 0; i < instance.length; i++){
 					console.log("pk: ",           instance[i]['pk']);
 					console.log("cart_field: ",   instance[i]['fields']['cart_field']);
@@ -148,6 +144,8 @@ function total_price(pk, action){
 				}else{
 					document.getElementById("all_checkbox").checked = false;
 				}
+			}else{
+				document.getElementById("all_checkbox").type = "hidden";
 			}
 		},
 		error: function() { 
@@ -173,6 +171,7 @@ function selected_models_info(){
 			console.log("Sellected: ", instance);
 			var all_checkbox = 0;
 			if (instance.length > 0){
+				document.getElementById("all_checkbox").type = "checkbox";
 				for (var i = 0; i < instance.length; i++){
 					mpk = instance[i]['pk'];
 					var m_checkbox = document.getElementById('single_price'+mpk);
@@ -189,6 +188,8 @@ function selected_models_info(){
 				}else{
 					document.getElementById("all_checkbox").checked = false;
 				}
+			}else{
+				document.getElementById("all_checkbox").type = "hidden";
 			}
 			console.log("al", all_checkbox)
 		},

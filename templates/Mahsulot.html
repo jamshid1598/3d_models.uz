@@ -105,10 +105,13 @@
 
 				<div class="slide__btn">
 					{% if object.paid %}
-						<a href="{% url 'Core:payment-view' %}" >
-							<button class="slide__buy" onclick="send_amount('{{ object.price }}')">Sotib olish</button>
-						</a>
-						<button   onclick="add_to_cart_view(this)" data-pk="{{ object.pk }}" data-action="add" data-pageid="product-page" type="submit" class="slide__bug add-to-basket popup">Savatchaga olish
+						<!-- <a href="{% url 'Core:payment-view' %}" > -->
+							<form action="{% url 'Core:payment-view' %}" method="get">
+								{% csrf_token %}
+								<button type="submit" onclick="send_amount('{{ object.price }}')" class="slide__buy">Sotib olish</button>
+							</form>
+						<!-- </a> -->
+						<button onclick="add_to_cart_view(this)" data-pk="{{ object.pk }}" data-action="add" data-pageid="product-page" type="submit" class="slide__bug add-to-basket popup">Savatchaga olish
 							<span class="popuptext" id="PopupNotification{{object.pk}}">
 								<a href="{% url 'login' %}?next={{request.path}}" class="text-white">Login</a> / <a href="{% url 'User:register' %}?next={{request.path}}">Sign Up</a>
 							</span>
@@ -143,28 +146,6 @@
 					}
 				});
 			}
-			function send_amount(amount){
-				$.ajax({
-					type: 'GET',
-					url: "{% url 'Core:payment-view' %}",
-					data : {
-						amount: amount,
-					},
-					success : function(json) {
-						alert("amount sended successfully to payment-view");
-					}
-				});
-				$.ajax({
-					type: 'GET',
-					url: "{% url 'card_verify_code' %}",
-					data : { 
-						amount: amount,
-					},
-					success : function(json) {
-						console.log("amount sended successfully to card_verify_code");
-					}
-				});
-			}
 		</script>
 		<!-- End Script -->
 
@@ -176,6 +157,63 @@
 		<script src="{% static 'jQuery/jquery.min.js' %}"></script>
 		<script src="{% static 'fancbox/jquery.fancybox.min.js' %}"></script>
 
+		<script>
+			function getCookie(name) {
+				var cookieValue = null;
+				if (document.cookie && document.cookie != '') {
+					var cookies = document.cookie.split(';');
+					for (var i = 0; i < cookies.length; i++) {
+						var cookie = jQuery.trim(cookies[i]);
+						// Does this cookie string begin with the name we want?
+						if (cookie.substring(0, name.length + 1) == (name + '=')) {
+							cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+							break;
+						}
+					}
+				}
+				return cookieValue;
+			}
+			var csrftoken = getCookie('csrftoken');
+			function csrfSafeMethod(method) {
+				// these HTTP methods do not require CSRF protection
+				return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+			}
+			$.ajaxSetup({
+				beforeSend: function(xhr, settings) {
+					if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+						xhr.setRequestHeader("X-CSRFToken", csrftoken);
+					}
+				}
+			});
+			function send_amount(amount){			
+				//$.ajax({
+				//	type: 'GET',
+				///	url: "{% url 'Core:payment-view' %}",
+				//	csrftoken: csrftoken,
+				//	data : {
+				//		amount: amount
+				//	},
+				//	success : function(json) {
+				//		console.log("amount sended successfully to payment-view");
+				
+						$.ajax({
+							type: 'GET',
+							url: "{% url 'Core:save_model' %}",
+							csrftoken: csrftoken,
+							data : {
+								model_quantity: 1,
+								single_price: amount,
+								total_price: 0
+							},
+							success : function(json) {
+								console.log("amount sended successfully to card_verify_code");
+							}
+						});
+					}
+				//});
+				
+			//}
+		</script>
 
 		<!--/jQuery-->
 		<!-- <script src="js/main.js"></script> -->

@@ -19,6 +19,7 @@ class CardCreateApiView(APIView):
         return Response(result)
 
     def card_create(self, validated_data):
+        print(validated_data)
         data = dict(
             id=validated_data['id'],
             method=CARD_CREATE,
@@ -27,7 +28,7 @@ class CardCreateApiView(APIView):
                     number=validated_data['params']['card']['number'],
                     expire=validated_data['params']['card']['expire'],
                 ),
-                amount=validated_data['params']['amount'],
+                # amount=validated_data['params']['amount'],
                 save=validated_data['params']['save']
             )
         )

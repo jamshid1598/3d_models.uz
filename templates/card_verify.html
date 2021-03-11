@@ -7,11 +7,12 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="{% url 'card_verify_code' %}" method="POST">
+    <form action="{% url 'download:card_verify_code' %}" method="POST">
         {% csrf_token %}
         <label for="verify">Tasdiqlash kodi</label>
         <input type="number" name="verify_code" id="verify"/>
         <input type="hidden" name="token" value="{{token}}">
+        <input type="hidden" name="amount" value="{{amount}}">
 
         <input type="submit" value="OK">
     </form>

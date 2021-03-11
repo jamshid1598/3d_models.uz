@@ -91,6 +91,15 @@ class PaymentView(LoginRequiredMixin, View):
 	# context       = {}
 	total_price = 0
 	def get(self, request, *args, **kwargs):
+		payform = PayForm() # Payment Form
+		
+		return render(
+			request,
+			self.template_name,
+			{'payform': payform},
+		)
+	def post(self, request):
+		# get selected models' total proce in cart page
 		if request.user.is_authenticated:
 			customer = self.request.user.customer
 			order, created = Order.objects.get_or_create(customer=customer, complete=False)
@@ -106,24 +115,18 @@ class PaymentView(LoginRequiredMixin, View):
 				elif item.cart_field:
 					self.total_price += item.model.price
 
-		print(self.total_price)
+		print("total price: ", self.total_price)
+		# get selected models' total proce in cart page
 
-		payform = PayForm() # Payment Form
-		
-		return render(
-			request,
-			self.template_name,
-			{'payform': payform},
-		)
-	def post(self, request):
 		payform = PayForm(request.POST)
 		if payform.is_valid():
 			number = payform.cleaned_data['number']
 			exp_date = payform.cleaned_data['exp_date']
-			r = create_verify(number, exp_date)
+			r = create_verify(number, exp_date, self.total_price)
 			if 'error' not in r:
 				return render(request, "card_verify.html", {
 					'token': r['token'],
+					'amount': self.total_price,
 				})
 		print("Error")
 		return redirect('Core:payment-view')

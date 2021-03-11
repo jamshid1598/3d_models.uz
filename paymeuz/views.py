@@ -28,7 +28,7 @@ class CardCreateApiView(APIView):
                     number=validated_data['params']['card']['number'],
                     expire=validated_data['params']['card']['expire'],
                 ),
-                # amount=validated_data['params']['amount'],
+                amount=validated_data['params']['amount'],
                 save=validated_data['params']['save']
             )
         )

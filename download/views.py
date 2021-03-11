@@ -5,18 +5,17 @@ from paymeuz.models import Transaction
 from cart.models import *
 
 
-def create_verify(number, exp_date):
-    # global price
-    # price = amount
+def create_verify(number, exp_date, amount):
     url = "http://127.0.0.1:8000/api/payme/card/create/"
     data = dict(
         id = id,
         params = dict(
             card = dict(
                 number = number,
+                # amount = amount,
                 expire = exp_date,
             ),
-            # amount = amount,
+            amount = amount,
             save = True
         )
     )
@@ -26,7 +25,6 @@ def create_verify(number, exp_date):
     return result
 
 
-
 id = Transaction.objects.all().count() + 1
 amount = 0
 
@@ -34,13 +32,14 @@ def card_verify_code(request):
     # global amount
     # amount = 0
     # if request.method == 'GET':
-    amount = request.GET.get('amount')
-    print(amount)
+    # amount = request.GET.get('amount')
+    # print(amount)
     if request.method == 'POST':
         url1 = 'http://127.0.0.1:8000/api/payme/card/verify/'
         token = request.POST['token']
         code = request.POST['verify_code']
-        # amount = request.POST['amount']
+        amount = request.POST['amount']
+        print("amount: ", type(amount))
         data1 = dict(
             id = id,
             params = dict(
@@ -56,7 +55,7 @@ def card_verify_code(request):
             id = id,
             params = dict(
                 token = token,
-                amount = amount,
+                amount = float(amount),
                 account = dict(
                     order_id = id
                 )

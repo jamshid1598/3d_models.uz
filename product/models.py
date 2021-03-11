@@ -46,8 +46,11 @@ class Product(models.Model):
     short_info  = models.CharField(max_length=500, default="3D model", verbose_name="Short Info")
     description = models.TextField(verbose_name='Description')
 
-    price    = models.DecimalField( verbose_name='Price', max_digits=10, decimal_places=2, default=100, validators=( MinValueValidator(1), MaxValueValidator(100000000),))
-    discount = models.DecimalField( verbose_name='Discount', max_digits=10, decimal_places=2, blank=True, null=True, validators=( MinValueValidator(1), MaxValueValidator(100000000),))
+    # price    = models.DecimalField( verbose_name='Price', max_digits=10, decimal_places=2, default=100, validators=( MinValueValidator(1), MaxValueValidator(100000000),))
+    # discount = models.DecimalField( verbose_name='Discount', max_digits=10, decimal_places=2, blank=True, null=True, validators=( MinValueValidator(1), MaxValueValidator(100000000),))
+
+    price    = models.BigIntegerField( verbose_name='Price', default=100, validators=( MinValueValidator(1), MaxValueValidator(100000000),))
+    discount = models.BigIntegerField( verbose_name='Discount', blank=True, null=True, validators=( MinValueValidator(1), MaxValueValidator(100000000),))
 
     paid = models.BooleanField(default=True, verbose_name="Paid")
     free = models.BooleanField(default=False, verbose_name="Free")

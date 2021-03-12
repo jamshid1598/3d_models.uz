@@ -38,7 +38,8 @@ def card_verify_code(request):
         url1 = 'http://127.0.0.1:8000/api/payme/card/verify/'
         token = request.POST['token']
         code = request.POST['verify_code']
-        amount = request.POST['amount']
+        price = request.POST['amount']
+        amount = float(price) * 100
         print("amount: ", type(amount))
         data1 = dict(
             id = id,
@@ -55,7 +56,7 @@ def card_verify_code(request):
             id = id,
             params = dict(
                 token = token,
-                amount = float(amount),
+                amount = amount,
                 account = dict(
                     order_id = id
                 )

@@ -62,24 +62,9 @@
 
 			</div>
 			
-			<div class="blog__counter">
-				{% for page_index in page_indexes %}
-					<div class="blog__counter--number"> <span> <a href="?page= {{ page_index }}" style="color:dimgray">{{ page_index }}</a> </span> </div>
-				{% endfor %} 
-			</div>
-			<div class="blog__btns">
-				{% if product_object_list.has_previous %}
-					<a href="?page={{ product_object_list.previous_page_number }}" class="blog__btns--back"> <img src="{% static 'img/icons/arrow-back.svg' %}" alt="back icon">Back</a>
-				{% else %}
-					<a style="pointer-events: none;" href="" class="blog__btns--back"> <img src="{% static 'img/icons/arrow-back.svg' %}" alt="back icon">Back</a>
-				{% endif %}
-
-				{% if product_object_list.has_next %}
-					<a href="?page={{ product_object_list.next_page_number }}" class="blog__btns--next">Next <img src="{% static 'img/icons/next-icon.svg' %}" alt="next icon"></a>
-				{% else %}
-					<a style="pointer-events: none;" class="blog__btns--next">Next <img src="{% static 'img/icons/next-icon.svg' %}" alt="next icon"></a>
-				{% endif %}
-			</div>
+			<!-- Pagination -->
+			{% include "includes/paginator.html" %}
+			<!-- Pagination -->
 		</section>
 	{% endblock bodycontent %}
 			

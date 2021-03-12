@@ -10,21 +10,46 @@ from django.views import View
 # from django.contrib.auth.forms import  AuthenticationForm  # Now we can use 'LoginForm' instead of 'AuthenticationForm'
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.views import LoginView
+from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from .forms import FeedbackForm
 from django.core.mail import send_mail
 from django.conf import settings
 # from shumoff import settings
 
-from .forms import NewUserForm
+from .forms import NewUserForm, UserLoginForm
 # from core.models  import Category
 # Create your views here.
 
 
-class NewUserCreationForm(CreateView):
+class NewUserCreationForm(SuccessMessageMixin, CreateView):
     template_name = 'registration/register.html'
     form_class = NewUserForm
     success_url = reverse_lazy('login')
+    success_message = "New account for %(first_name)s was created successfully"
+   
+    def get_success_message(self, cleaned_data):
+        return self.success_message % dict(
+            cleaned_data,
+            first_name=self.object.first_name,
+        )
+
+
+class LoginFormView(SuccessMessageMixin, LoginView):
+    template_name="registration/login.html"
+    authentication_form=UserLoginForm
+    # template_name = 'auth/login.html'
+    success_url = reverse_lazy('/')
+    success_message = "Email %(username)s were successfully logged in."
+
+    def get_success_message(self, cleaned_data):
+        return self.success_message % dict(
+            cleaned_data,
+            username=self.object.username,
+        )
+
+
 
 def logout(request):
 	logout(request)
@@ -32,70 +57,3 @@ def logout(request):
 	return redirect("Products:product-list")
 
 
-# class Contact(View):
-#     template_name ='contact.html'
-#     context       = {}
-#     def get(self, request, *args, **kwargs):
-#         category_list = Category.objects.all()
-#         self.context["category_list"] = category_list
-#         return render(
-#             request,
-#             self.template_name,
-#             self.context
-#         )
-
-# class Message(View):
-#     template_name ='messageform.html'
-#     context       = {}
-
-#     def get(self, request, *args, **kwargs):
-#         form                 = FeedbackForm()
-#         category_list = Category.objects.all()
-
-#         self.context["category_list"] = category_list
-#         self.context['form'] = form
-        
-#         return render(
-#             request,
-#             self.template_name,
-#             self.context
-#         )
-
-#     def post(self, request, *args, **kwargs):
-#         category_list = Category.objects.all()
-
-#         if request.method == "POST":
-#             form = FeedbackForm(request.POST)
-#             if form.is_valid():
-#                 first_name   = form.cleaned_data['name']
-#                 email        = form.cleaned_data['email']
-#                 phone_number = form.cleaned_data['phone']
-#                 text         = form.cleaned_data['text']
-
-#                 try:
-#                     subject    = "FULFIL EDUCATION"
-#                     thoughts   = f"{first_name} dan yangi xabar: \n\n{text}\nTel: {phone_number}\nEmail: {email}"
-#                     sender     = settings.EMAIL_HOST_USER
-#                     recipients = ['dovurovjamshid95@gmail.com']
-#                     # recipients = ['dovurovjamshid95@gmail.com']
-
-#                     send_mail(subject, thoughts, sender, recipients, fail_silently=False)
-
-#                     messages.success(request, f"{first_name} xabaringiz muvofaqiyatli yuborildi.")
-#                 except BadHeaderError:
-#                     return HttpResponse('Invalid header')
-#                 return redirect('User:message')
-#             else:
-#                 for msg in form.errors:
-#                     messages.error(request, f"{msg}")
-#                 return redirect('User:message')
-#         self.context = {
-#             'form': form,
-#             "category_list": category_list,
-#         }
-        
-#         return render(
-#             request, 
-#             self.template_name,
-#             self.context
-#         )

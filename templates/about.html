@@ -36,7 +36,15 @@
 						<div class="about__desc">{{ object.description|safe }} </div>
 					</div>
 					<div class=" about__img{% cycle '2' '1' %}">
-						<img src="{{ object.imageURL }}" alt="">
+						{% if object.video %}
+							<video width="540" height="400" controls>
+								<source src="{{ object.video.url }}" type="video/mp4">
+								<source src="{{ object.video.url }}" type="video/ogg">
+							Your browser does not support the video tag.
+							</video> 
+						{% else %}
+							<img src="{{ object.imageURL }}" alt="">
+						{% endif %}
 					</div>
 				</div>
 			{% empty %}

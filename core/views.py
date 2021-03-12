@@ -40,31 +40,19 @@ class MainView(ListView):
 	paginate_by = 10
 
 
-class Categories(View):
+class Categories(ListView):
 	template_name = "kategorya.html"
-	context       = {}
-	def get(self, request, pk, *args, **kwargs):
-		categories  = Category.objects.get(pk=pk)
-		models_list = categories.product_category.all()
+	model = Product
+	paginate_by = 24
 
-		paginator     = Paginator(models_list, 24)
-		page_num      = paginator.num_pages
-		page_indexes  = [x for x in range(1, page_num + 1)]
-
-		print(page_indexes)
-	
-		page_number 		= request.GET.get('page')
-		product_object_list = paginator.get_page(page_number)
-
-		self.context['product_object_list'] = product_object_list
-		self.context['page_indexes']		= page_indexes
-		self.context["object_list"] 		= models_list
-		
-		return render(
-			request,
-			self.template_name,
-			self.context
-		)
+	def get_queryset(self):
+		queryset=super().get_queryset()
+		try:
+			pk = self.kwargs.get('pk')
+			category = Category.objects.get(pk=pk)
+			return queryset.filter(category=category)
+		except:
+			return queryset
 
 
 class ModelDetailView(DetailView):
@@ -85,6 +73,36 @@ class ModelDetailView(DetailView):
 		return context
 
 
+class FreeModelListView(ListView):
+	template_name = "free.html"
+	model = Product
+	paginate_by = 24
+
+	def get_queryset(self):
+		queryset=super().get_queryset()
+		try:
+			return queryset.filter(free=True)
+		except:
+			return queryset
+
+
+class DiscuntView(ListView):
+	template_name = "sale.html"
+	model = Product
+	paginate_by = 24
+
+	def get_queryset(self):
+		queryset=super().get_queryset()
+		discount_list = []
+		
+		for product in queryset.filter(paid=True, free=False):
+			if product.discount:
+				discount_list.append(product)
+		try:
+			queryset = discount_list
+			return queryset
+		except:
+			return queryset
 
 class PaymentView(LoginRequiredMixin, View):
 	template_name = "To'lov.forma.html"
@@ -132,29 +150,7 @@ class PaymentView(LoginRequiredMixin, View):
 		return redirect('Core:payment-view')
 
 
-class FreeModelListView(View):
-	template_name = "free.html"
-	context       = {}
 
-	def get(self, request, *args, **kwargs):
-		models_list  = Product.objects.filter(free=True)
-
-		paginator     = Paginator(models_list, 24)
-		page_num      = paginator.num_pages
-		page_indexes  = [x for x in range(1, page_num + 1)]
-
-		page_number 		= request.GET.get('page')
-		product_object_list = paginator.get_page(page_number)
-
-		self.context['product_object_list'] = product_object_list
-		self.context['page_indexes']		= page_indexes
-		self.context["object_list"] 		= models_list
-		
-		return render(
-			request,
-			self.template_name,
-			self.context
-		)
 
 
 def download_counter(request):
@@ -177,6 +173,7 @@ def downloads(request, *args, **kwargs):
 			print("Error occured: ", e)
 	return Http404
 
+
 # other changes
 def save_model(request):
 	quantity = request.GET.get('model_quantity')
@@ -196,10 +193,12 @@ def save_model(request):
 	return redirect('/')
 # end other changes
 
+
 class PortfolioListView(ListView):
 	model = PortFolio
 	template_name = "portfolio.html"
 	paginate_by = 27
+
 
 class PortfolioDetailView(DetailView):
 	model=PortFolio
@@ -208,39 +207,11 @@ class PortfolioDetailView(DetailView):
 	slug_field     = 'slug'
 	slug_url_kwarg = 'slug'
 	
+	
 class VideosListView(ListView):
     model = VideoModel
     template_name = 'Videos.html'
     paginate_by = 15
-
-
-class DiscuntView(View):
-	template_name = "sale.html"
-	context={}
-	def get(self, request, *args, **kwargs):
-		discount_list = []
-		
-		for product in Product.objects.all():
-			if product.discount and product.paid:
-				discount_list.append(product)
-		
-		paginator     = Paginator(discount_list, 24)
-		page_num      = paginator.num_pages
-		page_indexes  = [x for x in range(1, page_num + 1)]
-
-		page_number 		= request.GET.get('page')
-		product_object_list = paginator.get_page(page_number)
-		
-		self.context['product_object_list'] = product_object_list
-		self.context['page_indexes']		= page_indexes
-		self.context["object_list"]         = discount_list
-		
-		return render(
-			request,
-			self.template_name, 
-			self.context
-		)
-
 
 
 class AboutUsView(View):

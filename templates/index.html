@@ -12,6 +12,62 @@
 		<!-- style-link -->
 		<link rel="stylesheet" href="{% static 'css/style.css' %}"> 
 		<link rel="stylesheet" href="{% static 'css/main.css' %}">
+
+		<style>
+
+			#searchFirst {
+				font-size: 25px;
+				background-color: white;
+			}
+			#searchFirst > .fa {
+				padding-left: 8px;
+			}
+			.modal__result {
+				display: flex;
+				justify-content: space-between;
+				align-items: start;
+				padding: 20px 7px 20px 0;
+				border-bottom: 1px solid #444;
+			}  
+			.modal__result--image {
+				width: 140px;
+				height: 100px;
+				object-fit: cover;
+				object-position: center;    
+				margin: 0px 4px 0px 0px;
+			}
+			.product__name {
+				width: 40%;
+			}
+			.product__name--subtitle {
+				color: #444;   
+				margin: 10px 0px 0px 0px;
+			}  
+			.product__price {
+				font-size: 18px;
+				
+			}  
+			.sliderArrow {
+				font-size: 34px;
+				color: #444;
+				font-weight: bold;
+				transition: color ease-in .3s;
+				padding: 5px;
+			}
+			.sliderArrow:hover {
+				color: #000;
+			}
+			.blog__item--images{
+				object-fit: cover;
+			}
+			.blog__item--subtitle{
+				/* word-break: break-all; */
+				overflow-wrap: break-word;
+				width: 280px;
+				text-align: center;
+			}
+		</style>
+
 	{% endblock css %}
 
 	{% block title %} <title>3D Model</title> {% endblock title %}
@@ -140,50 +196,6 @@
 			</div>
 		</div>
 		
-		<style>
-
-			#searchFirst {
-				font-size: 25px;
-			}
-			#searchFirst > .fa {
-				padding-left: 8px;
-			}
-			.modal__result {
-				display: flex;
-				justify-content: space-between;
-				align-items: start;
-				padding: 20px 7px 20px 0;
-			border-bottom: 1px solid #444;
-			}  
-			.modal__result--image {
-				width: 140px;
-				height: 100px;
-				object-fit: cover;
-				object-position: center;    
-				margin: 0px 4px 0px 0px;
-			}
-			.product__name {
-				width: 40%;
-			}
-			.product__name--subtitle {
-				color: #444;   
-				margin: 10px 0px 0px 0px;
-			}  
-			.product__price {
-				font-size: 18px;
-
-			}  
-			.sliderArrow {
-				font-size: 34px;
-				color: #444;
-				font-weight: bold;
-				transition: color ease-in .3s;
-				padding: 5px;
-			}
-			.sliderArrow:hover {
-				color: #000;
-			}
-		</style>	
 		<!--/ Modal window -->
 
 		<section class="blog">
@@ -269,7 +281,7 @@
 			</div>
 		</section>
 
-		<section class="company">
+		<!-- <section class="company">
 			<div class="company__body">
 				<div class="company__title">Top modellar</div>
 				<div class="company__slider">
@@ -345,7 +357,7 @@
 					</div>
 				</div>
 			</div>
-		</section>
+		</section> -->
 	{% endblock bodycontent %}
 
 	{% block js %} 

@@ -202,7 +202,7 @@ STATICFILES_DIRS = (BASE_DIR, 'static')
 # STATIC_ROOT = BASE_DIR / 'static_root' # is equal to os.path.join(BASE_DIR, 'static/')
 MEDIA_ROOT = BASE_DIR / 'media_root'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
@@ -219,12 +219,12 @@ ACCOUNT_USERNAME_BLACKLIST = ['administrator', 'help',
 
 
 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST_USER = ""
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_PASSWORD = ''
+EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST_USER     = "example@gmail.com"
+EMAIL_HOST          = 'smtp.gmail.com'
+EMAIL_PORT          = 587
+EMAIL_USE_TLS       = True
+EMAIL_HOST_PASSWORD = 'password'
 
 CELERY_BROKER_URL = 'redis://localhost:6379'  
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'  

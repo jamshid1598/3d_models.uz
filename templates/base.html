@@ -125,6 +125,10 @@
         {% include "includes/header.html" %}        
         <!-- end Header -->
 
+        <!-- Header -->
+        {% include "includes/messages.html" %}        
+        <!-- end Header -->
+
         <!-- Body Content -->
         {% block bodycontent %}
             
@@ -140,6 +144,15 @@
     {% block js %} {% endblock js %}
     <script src="{% static 'js/cart-control.js' %}"></script>
     <script src="{% static 'js/additional.js' %}"></script>
+    <script>
+      $(document).ready(function(event){
+        $(function(){
+          setTimeout(function(){
+            $('.alert').slideUp(2000);
+          }, 5000);
+        });
+      });
+    </script>
 </body>
 
 </html>

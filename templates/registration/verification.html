@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load static %}
+
+	{% block css %}
+		<!-- icons-link -->
+		<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+			integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+		<link rel="stylesheet" href="{% static 'jQuery/lips/owlcarousel2/assets/owl.carousel.min.css' %}">
+		<link rel="stylesheet" href="{% static 'jQuery/lips/owlcarousel2/assets/owl.theme.default.min.css' %}">
+
+		<link rel="stylesheet" href="{% static 'css/swiper.min.css' %}">
+		<!-- style-link -->
+		<link rel="stylesheet" href="{% static 'css/style.css' %}">
+	{% endblock css %}
+
+	{% block title %} <title>3D Model</title> {% endblock title %}
+
+	{% block bodycontent %}
+
+		<section class="content">
+
+			<!-- <div class="content__navbar">
+				<ul class="content__navbar--list free">
+					<li><a href="index.html">Bosh menyu</a></li>
+					<li><a href="sale.html">Aksiya</a></li>
+					<li><a href="free.html">Bepul mahsulotlar</a></li>
+					<li><a href="portfolio.html">Portfolio</a></li>
+					<li><a href="Videos.html">Videolar</a></li>
+					<li><a href="about.html">Biz haqimizda</a></li>
+					<li><a href="Aloqa.html">Aloqa</a></li>
+				</ul>
+			</div> -->
+
+			<!-- Navbar -->
+			{% include 'includes/navbar.html' %}
+			<!-- end Navbar -->
+
+			<div class="payForm__body-2">
+				<h2>Yangi parolni kiriting va tastiqlang!</h2>
+
+				<div class="verification">
+					<div class="wrapp">
+						<input type="password" name="one" placeholder="yangi parol..">
+						<i class="fa fa-eye eye" onclick="showHide()"></i>
+					</div>
+					
+					<div class="wrapp">
+						<input type="password" placeholder="qaytadan yozing..">
+					</div>
+				</div>
+
+				<button><a href="#" class="btn">ok</a></button>
+			</div>
+		</section>
+
+		<style>
+			input {
+				padding: 5px 2px 5px 10px;
+				font-size: 18px;
+				border-bottom-left-radius: 8px;
+				border-top-left-radius: 8px;
+				outline: none;
+			}
+		
+			.verification {
+				display: flex;
+				flex-direction: column;
+				margin: 50px 0;
+			}
+			.wrapp {
+				margin-top: 30px;
+				border: 1px solid #777;
+				border-radius: 3px;
+				width: 270px;
+				box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.251);
+			}
+			.fa {
+				background: #fff;
+				color: #43A049;
+				font-size: 20px;
+				padding: 8px;
+				margin-left: -4px;
+				cursor: pointer;
+			}
+
+			.payForm__body-2 {
+				margin: 70px auto 0;
+				min-height: 90vh;
+				width: calc(100% - 20vw);
+				max-width: 1366px;
+			}
+
+			.footer {
+				margin-top: 80px;
+			}
+			button .btn {
+				padding: 13px 35px;
+				
+				text-transform: uppercase;
+				text-align: center;
+				background: #05E600;
+				box-shadow: 1px 2px 5px rgba(0, 0, 0, 0.31);
+				border-radius: 5px;
+				color: #fff;
+				font-size: 16px;
+				transition: all ease-in .3s;
+			}
+		</style>
+	{% endblock bodycontent %}
+
+	{% block js %}
+		<!--jQuery-->
+		<script src="{% static 'jQuery/jquery.min.js' %}"></script>
+		<script src="{% static 'jQuery/lips/owlcarousel2/owl.carousel.min.js' %}"></script>
+		<script src="{% static 'jQuery/jQuery.js' %}"></script>
+
+		<script src="{% static 'js/swiper.min.js' %}"></script>
+		<!--/jQuery-->
+		<script src="{% static 'js/main.js' %}"></script>
+		<script>
+			let input = document.querySelector('input');
+			let show_hide = document.querySelector('i.fa');
+
+			function showHide() {
+				if (input.type == "password") {
+					show_hide.className = "fa fa-eye-slash";
+					input.type = "text";
+
+				} else {
+					show_hide.className = "fa fa-eye";
+					input.type = "password";
+				}
+			}
+
+		</script>
+	{% endblock js %}

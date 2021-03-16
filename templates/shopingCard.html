@@ -71,8 +71,11 @@ integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQV
 					</div>
 					<div class="shopproduct__info" >
 						<div class="shopproduct__info--title">{{ item.model.name }}
-							<b data="120">{{ item.model.price }}</b>
-							<span> so'm</span>
+							{% if item.model.discount %}
+								<b data="120">{{ item.model.discount }}</b> <span> so'm</span> (aksiya)
+							{% elif item.model.price %}
+								<b data="120">{{ item.model.price }}</b> <span> so'm</span>	
+							{% endif %}
 						</div>
 						<div class="shopproduct__info--text">
 							<p>

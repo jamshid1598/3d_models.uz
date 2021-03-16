@@ -1,74 +1,80 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .zip_maker import zip_maker
+from django.contrib.auth.decorators import login_required
+from .tasks import zip_maker
 import requests
 from paymeuz.models import Transaction
 from cart.models import *
+from .tasks import send_download_page
 
 
+# @login_required
 def create_verify(number, exp_date, amount):
-    url = "http://127.0.0.1:8000/api/payme/card/create/"
-    data = dict(
-        id = id,
-        params = dict(
-            card = dict(
-                number = number,
-                # amount = amount,
-                expire = exp_date,
-            ),
-            amount = amount,
-            save = True
-        )
-    )
-    response = requests.post(url, json = data)
-    result = response.json()
+	url = "http://127.0.0.1:8000/api/payme/card/create/"
+	data = dict(
+		id = id,
+		params = dict(
+			card = dict(
+				number = number,
+				expire = exp_date,
+			),
+			amount = amount,
+			save = True
+		)
+	)
+	response = requests.post(url, json = data)
+	result = response.json()
 
-    return result
+	return result
 
 
 id = Transaction.objects.all().count() + 1
 amount = 0
 
+# @login_required
 def card_verify_code(request):
-    # global amount
-    # amount = 0
-    # if request.method == 'GET':
-    # amount = request.GET.get('amount')
-    # print(amount)
-    if request.method == 'POST':
-        url1 = 'http://127.0.0.1:8000/api/payme/card/verify/'
-        token = request.POST['token']
-        code = request.POST['verify_code']
-        price = request.POST['amount']
-        amount = float(price) * 100
-        print("amount: ", type(amount))
-        data1 = dict(
-            id = id,
-            params = dict(
-                token = token,
-                code = code
-            )
-        )
-        r = requests.post(url1, json=data1)
-        result = r.json()
+	if request.method == 'POST':
+		url1 = 'http://127.0.0.1:8000/api/payme/card/verify/'
+		token = request.POST['token']
+		code = request.POST['verify_code']
+		price = request.POST['amount']
+		amount = float(price) * 100
+		print("amount: ", type(amount))
+		data1 = dict(
+			id = id,
+			params = dict(
+				token = token,
+				code = code,
+			)
+		)
+		r = requests.post(url1, json=data1)
+		result = r.json()
 
-        url2 = 'http://127.0.0.1:8000/api/payme/payment/'
-        data2 = dict(
-            id = id,
-            params = dict(
-                token = token,
-                amount = amount,
-                account = dict(
-                    order_id = id
-                )
-            )
-        )
-        rq = requests.post(url2, json=data2)
-        rs = rq.json()
-        print(rs)
-        return redirect('/')
-    return render(request, "card_verify.html")
+		url2 = 'http://127.0.0.1:8000/api/payme/payment/'
+		data2 = dict(
+			id = id,
+			params = dict(
+				token = token,
+				amount = amount,
+				account = dict(
+					order_id = id
+				)
+			)
+		)
+		rq = requests.post(url2, json=data2)
+		rs = rq.json()
+		print(rs)
 
-
+		try:
+			if rs['result']['receipt']['error'] == None:
+				print("successfully")
+				customer = request.user.customer
+				send_download_page(request, customer)
+			else:
+				print("Houston, we have a problem! :(")
+		except Exception as e:
+			print("Houston, we have a problem! :(\n", e)
+		return redirect('/')
+	return render(request, "card_verify.html")
 
 
 
@@ -80,19 +86,23 @@ except ImportError:
 from zipfile import ZipFile
 import os
 from django.conf import settings
+from cart.models import Customer
 
-def make_models_zip(request, *args, **kwargs):
+def make_models_zip(request, pk, *args, **kwargs):
 
-	if request.user.is_authenticated:
-		customer = request.user.customer
-		order, created = Order.objects.get_or_create(customer=customer, complete=False)
-		print("Order: ", order, '\n', "Created: ", created)
-		items = order.orderitem_set.all()
-
+	# if request.user.is_authenticated:
+	# 	customer = request.user.customer
+	# 	order, created = Order.objects.get_or_create(customer=customer, complete=False)
+	# 	print("Order: ", order, '\n', "Created: ", created)
+	# 	items = order.orderitem_set.all()
+	customer = Customer.objects.get(pk=pk)
+	order = Order.objects.get(customer=customer, complete=False)
+	items = order.orderitem_set.all()
 	model_locations = []
-	for model in  items:
-		if model.cart_field:
-			model_locations.append(model.model.model_file.path)
-	# print("Zip File", zip_maker(model_locations))
-	return  zip_maker(model_locations)
-
+	if len(items) > 0:
+		for model in  items:
+			if model.cart_field:
+				model_locations.append(model.model.model_file.path)
+		return  zip_maker(model_locations, customer)
+	else:
+		return

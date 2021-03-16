@@ -104,13 +104,15 @@ class DiscuntView(ListView):
 		except:
 			return queryset
 
+
+from download.tasks import send_download_page
 class PaymentView(LoginRequiredMixin, View):
 	template_name = "To'lov.forma.html"
 	# context       = {}
 	total_price = 0
 	def get(self, request, *args, **kwargs):
 		payform = PayForm() # Payment Form
-		
+		# send_download_page(request, request.user.customer)
 		return render(
 			request,
 			self.template_name,
@@ -163,6 +165,11 @@ def download_counter(request):
 
 
 def downloads(request, *args, **kwargs):
+
+	# print("Customer, ", request.user.customer.user.first_name)
+	# print("Curront url: ", request.path)
+	# print(request.build_absolute_uri)
+
 	models = Product.objects.all()
 	downloads = 0
 	if models:

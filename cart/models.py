@@ -15,8 +15,6 @@ from product.models import Product, Category
 
 class Customer(models.Model):
     user = models.OneToOneField(User, null=True, blank=True,  on_delete=models.CASCADE)
-    # name = models.CharField(max_length=200, null=True, verbose_name="имя: ")
-    # phone = models.CharField(max_length=200, null=True, verbose_name="Телефонный номер: ")
    
     class Meta:
         verbose_name = "Customer"
@@ -132,3 +130,9 @@ class OrderItem(models.Model):
             price = self.model.price
         total = price * self.quantity
         return total
+
+
+class OrderSingleItem(models.Model):
+    customer  = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='order_single_item')
+    model     = models.ForeignKey(Product, blank=True, null=True, on_delete=models.SET_NULL)
+    completed = models.BooleanField(default=False) # after download is completed this field value must be changed to True

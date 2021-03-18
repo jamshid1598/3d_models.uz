@@ -43,6 +43,7 @@ urlpatterns = [
     path('ajax/downloads/', downloads, name='downloads'),
 
     path('payment/', PaymentView.as_view(), name='payment-view'),
+    path('payment/<int:pk>/', PaymentView.as_view(), name='payment-view'),
 
     path('portfolio/', PortfolioListView.as_view(), name='portfolio-view'),
     path('portfolio/detail/<slug:slug>/', PortfolioDetailView.as_view(), name='portfolio-detail-view'),

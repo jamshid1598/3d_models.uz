@@ -110,21 +110,25 @@ class PaymentView(LoginRequiredMixin, View):
 	template_name = "To'lov.forma.html"
 	# context       = {}
 	total_price = 0
-	def get(self, request, *args, **kwargs):
-		payform = PayForm() # Payment Form
+	def get(self, request, pk=None, *args, **kwargs):
+    		payform = PayForm() # Payment Form
 		# send_download_page(request, request.user.customer)
 		return render(
 			request,
 			self.template_name,
 			{'payform': payform},
 		)
-	def post(self, request):
+	def post(self, request, pk=None, *args, **kwargs):
 		# get selected models' total proce in cart page
-		if request.user.is_authenticated:
+		model=None
+		if request.user.is_authenticated and pk==None:
 			customer = self.request.user.customer
 			order, created = Order.objects.get_or_create(customer=customer, complete=False)
 			print("Order: ", order, '\n', "Created: ", created)
 			items = order.orderitem_set.all()
+		elif request.user.is_authenticated and pk!=None:
+			model = Product.objects.get(pk=pk)
+			items = []
 		else:
 			items = []
 		
@@ -134,6 +138,11 @@ class PaymentView(LoginRequiredMixin, View):
 					self.total_price += item.model.discount
 				elif item.cart_field:
 					self.total_price += item.model.price
+		elif model:
+			if model.discount:
+				self.total_price += model.discount
+			else:
+				self.total_price += model.price
 
 		print("total price: ", self.total_price)
 		# get selected models' total proce in cart page
@@ -147,12 +156,10 @@ class PaymentView(LoginRequiredMixin, View):
 				return render(request, "card_verify.html", {
 					'token': r['token'],
 					'amount': self.total_price,
+					'blogid': pk,
 				})
 		print("Error")
 		return redirect('Core:payment-view')
-
-
-
 
 
 def download_counter(request):
@@ -183,17 +190,17 @@ def downloads(request, *args, **kwargs):
 
 # other changes
 def save_model(request):
-	quantity = request.GET.get('model_quantity')
+	quantity     = request.GET.get('model_quantity')
 	single_price = request.GET.get('single_price')
-	total_price = request.GET.get('total_price')
-	print(quantity, single_price, request.user.id)
-	customer = Customer.objects.get(user=request.user.id)
-	ordereditem = OrderedItem.objects.create(
-		model_quantity=quantity, 
-		single_price = single_price,
-		total_price = total_price,
-		completed = False,
-		customer_id = customer.id
+	total_price  = request.GET.get('total_price')
+	# print(quantity, single_price, request.user.id)
+	customer     = Customer.objects.get(user=request.user.id)
+	ordereditem  = OrderedItem.objects.create(
+		model_quantity = quantity, 
+		single_price   = single_price,
+		total_price    = total_price,
+		completed      = False,
+		customer_id    = customer.id
 	)
 	print(ordereditem)
 	ordereditem.save()
@@ -202,13 +209,13 @@ def save_model(request):
 
 
 class PortfolioListView(ListView):
-	model = PortFolio
+	model 		  = PortFolio
 	template_name = "portfolio.html"
-	paginate_by = 27
+	paginate_by   = 27
 
 
 class PortfolioDetailView(DetailView):
-	model=PortFolio
+	model         = PortFolio
 	template_name = "portfolioKo'rinish.html"
 	
 	slug_field     = 'slug'
@@ -216,14 +223,14 @@ class PortfolioDetailView(DetailView):
 	
 	
 class VideosListView(ListView):
-    model = VideoModel
+    model         = VideoModel
     template_name = 'Videos.html'
-    paginate_by = 15
+    paginate_by   = 15
 
 
 class AboutUsView(View):
 	template_name = "about.html"
-	context={}
+	context       = {}
 	def get(self, request, *args, **kwargs):
 		self.context["object_list"] = AboutUs.objects.all()
 		return render(

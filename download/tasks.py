@@ -17,7 +17,8 @@ try:
 except ImportError:
 	from io import StringIO
 
-
+from cart.models import OrderSingleItem
+from product.models import Product
 
 from io import BytesIO
 
@@ -46,17 +47,30 @@ def zip_maker(filelist, customer):
 
 
 
-def send_download_page(request, customer):
+def send_download_page(request, customer, modelid=None):
 	pk   = customer.pk
 	name = customer.user.first_name
 	email = customer.user.email
 
 	try:
 		subject = "3D Model download link"
-		thoughts = f"""Assalomu alekum {name}.\n Xaridingiz uchun tashakkur.
-					Quyidagi link orqali siz 3d model fayl(fayllarni) yuklab olishingiz mumkin.
-					http://127.0.0.1:8000/download/{pk}/3d-model/zip/
-					"""
+		if modelid:
+			pk = int(modelid)
+			model = Product.objects.get(pk=pk)
+			order, created = OrderSingleItem.objects.get_or_create(customer=customer, model=model)
+			if not created:
+				order.completed = False
+				order.save()
+			thoughts = f"""Assalomu alekum {name}.\n Xaridingiz uchun tashakkur.
+						Quyidagi link orqali siz 3d model fayl(fayllarni) yuklab olishingiz mumkin.
+						http://127.0.0.1:8000/download/{pk}/{order.pk}/3d-model/zip/
+						"""
+		else:
+			thoughts = f"""Assalomu alekum {name}.\n Xaridingiz uchun tashakkur.
+						Quyidagi link orqali siz 3d model fayl(fayllarni) yuklab olishingiz mumkin.
+						http://127.0.0.1:8000/download/{pk}/3d-model/zip/
+						"""
+
 		sender = settings.EMAIL_HOST_USER
 		# recipients = ['dovurovjamshid95@gmail.com']
 		recipients = [email, ]

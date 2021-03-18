@@ -6,6 +6,7 @@ from django.http import HttpResponse, Http404, JsonResponse, BadHeaderError
 from django.core import serializers
 from django.views import View
 from django.core.serializers.json import DjangoJSONEncoder
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.template import defaultfilters
 from django.conf import settings
 from django.db.models import F
@@ -99,7 +100,7 @@ class CartDetailView(View):
 					self.total_price += item.model.price
 		self.context = {
 			"items":items,
-			"order":order,
+			# "order":order,
 			"total_price": self.total_price,
 			"previous_path": previous_path,
 			"items_json": items_json

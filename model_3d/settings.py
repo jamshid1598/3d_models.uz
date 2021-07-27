@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'g%ej^l%6^4t04#+_v+c-308!fb^u@b6r)bg)ganwt9y)@hs9jn'
+SECRET_KEY = ''
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -146,8 +146,8 @@ DATABASES = {
     #  'default': {
     #     'ENGINE': 'django.db.backends.postgresql',
     #     'NAME': 'model3D_db',
-    #     'USER': 'postgres',
-    #     'PASSWORD': '123',
+    #     'USER': '',
+    #     'PASSWORD': '',
     #     'HOST': 'localhost',
     #     'PORT': '5432',
     # }
@@ -220,11 +220,11 @@ ACCOUNT_USERNAME_BLACKLIST = ['administrator', 'help',
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST_USER = "testingemail286@gmail.com"
+EMAIL_HOST_USER = ""
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_PASSWORD = 'companyinstant'
+EMAIL_HOST_PASSWORD = ''
 
 CELERY_BROKER_URL = 'redis://localhost:6379'  
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'  
